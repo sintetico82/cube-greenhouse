@@ -1,0 +1,45 @@
+{
+  "name": "cube-greenhouse",
+  "version": "1.0.0",
+  "description": "A cube indoor greenhouse system",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sintetico82/Cube-Greenhouse.git"
+  },
+  "keywords": [
+    "greenhouse",
+    "cube",
+    "ikea",
+    "indoor",
+    "raspberry-pi",
+    "diy"
+  ],
+  "author": "sintetico82",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/sintetico82/Cube-Greenhouse/issues"
+  },
+  "homepage": "https://github.com/sintetico82/Cube-Greenhouse#readme",
+  "dependencies": {
+    "ease-component": "^1.0.0",
+    "express": "^4.16.3",
+    "html": "^1.0.0",
+    "johnny-five": "^0.14.3",
+    "mustache-express": "^1.2.5",
+    "node-dht-sensor": "0.0.34",
+    "oled-js": "^4.0.5",
+    "raspi-io": "^8.1.1"
+  },
+  "devDependencies": {
+    "@types/chart.js": "^2.7.14",
+    "@types/express": "^4.11.1",
+    "@types/johnny-five": "0.0.36",
+    "@types/jquery": "^3.3.1",
+    "@types/node": "^9.6.6",
+    "nodemon": "^1.17.3"
+  }
+}
