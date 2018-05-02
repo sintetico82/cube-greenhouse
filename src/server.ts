@@ -35,10 +35,13 @@ app.use(express.static(__dirname + "/public"));
 var server = createServer(app);
 var io = socketIo(server);
 
-// Create e new farmer
-var farmer = new Farmer();
+
 
 board.on("ready", function () {
+
+    // Create e new farmer
+    var farmer = new Farmer(board);
+
     var led = new Led(29); //GPIO21
 
     // turn on power LED
@@ -56,6 +59,9 @@ board.on("ready", function () {
             io.sockets.emit("temperature", { temperature: t.toFixed(2), humidity: h.toFixed(2) });
         })
 
+        farmer.lightToggle();
+
+        farmer.freshAir();
     });
 
 
