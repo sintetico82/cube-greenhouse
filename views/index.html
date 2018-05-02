@@ -16,18 +16,22 @@
             background-color: #252830;
             margin-top: 50px;
         }
+
         .text-lime {
             color: limegreen;
         }
+
+       
     </style>
 </head>
 
 <body>
     <div class="container">
-        <h1 class="text-lime text-center"><i class="fas fa-cube"></i> Cube Greenhouse</h1>
+        <h1 class="text-lime text-center">
+            <i class="fas fa-cube"></i> Cube Greenhouse</h1>
         <br />
         <div class="row">
-            <div class="col">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="card">
                     <div class="card-header bg-danger text-white">
                         Temperature
@@ -41,8 +45,9 @@
 
                     </div>
                 </div>
+                <br />
             </div>
-            <div class="col">
+            <div class="col-12 col-sm-6 col-lg-4">
                 <div class="card">
                     <div class="card-header bg-primary text-white">
                         Humidity
@@ -57,8 +62,26 @@
 
                     </div>
                 </div>
+                <br />
             </div>
-           
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-default">
+                        Light
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title text-center">
+                            <i class="fas fa-lightbulb"></i>
+                            </i>
+                            <span id="light-placeholder">n.d.</span>
+
+                        </h1>
+
+                    </div>
+                </div>
+                <br />
+            </div>
+
         </div>
     </div>
 

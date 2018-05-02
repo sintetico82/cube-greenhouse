@@ -11,7 +11,8 @@ var mustacheExpress = require('mustache-express');
 
 var board = new Board({
     repl: false,
-    io: new Raspi()
+    io: new Raspi(),
+    debug: false
 });
 
 
@@ -58,13 +59,29 @@ board.on("ready", function () {
         farmer.checkTemperature(function(t : number,h: number) {
             io.sockets.emit("temperature", { temperature: t.toFixed(2), humidity: h.toFixed(2) });
         })
+       
+    });
 
-        farmer.lightToggle();
-
-        farmer.freshAir();
+    farmer.on("light",function(status: boolean) {
+        io.sockets.emit("light",status);
     });
 
 
+    io.on('connection', function(socket){
+
+
+        socket.on("ready",function() {
+
+            farmer.getLightStatus(function(status : any) {
+                io.sockets.emit("light",status);
+            });
+        })
+
+        
+    });
+
+
+   
     
 
     board.on("exit", function () {
