@@ -4,6 +4,7 @@ import socketIo from "socket.io";
 import { createServer, Server } from 'http';
 
 import { Farmer } from "./farmer"
+import { stat } from "fs";
 
 var Raspi = require("raspi-io");
 var mustacheExpress = require('mustache-express');
@@ -66,6 +67,10 @@ board.on("ready", function () {
         io.sockets.emit("light",status);
     });
 
+    farmer.on("water",function(status: boolean) {
+        io.sockets.emit("water",status);
+    })
+
 
     io.on('connection', function(socket){
 
@@ -75,6 +80,7 @@ board.on("ready", function () {
             farmer.getLightStatus(function(status : any) {
                 io.sockets.emit("light",status);
             });
+
         })
 
         

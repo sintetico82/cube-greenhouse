@@ -1,5 +1,5 @@
 var sensor = require('node-dht-sensor');
-import { Led, Board, Pin, LCD } from "johnny-five";
+import { Led, Board, Pin, LCD, Sensor } from "johnny-five";
 import util from "util";
 import cron, { CronJob } from "cron";
 import EventEmitter from "events";
@@ -16,12 +16,19 @@ export class Farmer extends EventEmitter {
 
     private readonly FAN_PIN: number = 24; // GPIO19
 
+    private readonly WATER_PIN: number = 0; // GPIO17
+
     private light = new Led(this.LIGHT_PIN); //GPIO6
     private pinFan = new Pin(this.FAN_PIN); // GPIO19
     private lcd = new LCD({
         controller: "PCF8574"
     });
+    private waterSensor = new Pin( {
+        pin: this.WATER_PIN,
+        type: "digital"
+    });
 
+    private isWaterIn : boolean = false;
     private isLightOn : boolean = false;
 
     private jobCheckTheLight : CronJob;
@@ -30,16 +37,33 @@ export class Farmer extends EventEmitter {
 
     constructor(board: Board) {
         super();
+        let t = this;
         this.board = board;
 
         let light = this.light;
         let pinFan = this.pinFan;
         let lcd = this.lcd;
+        
         this.board.on("exit", function () {
             light.off();
             pinFan.low();
             lcd.off();
         });
+
+      
+        this.waterSensor.read(function(err,data) {
+            if(!err) {
+                console.log("Water "+data);
+                t.emit("water",data > 0);
+              /* var current = data > 0 ;
+               if(current != t.isWaterIn) {
+                t.isWaterIn = current;
+                t.emit("water",t.isWaterIn);
+               }*/
+            } else
+                console.log(err);
+            
+        })
 
 
         this.jobCheckTheLight = this.checkTheLightJob();
@@ -59,7 +83,7 @@ export class Farmer extends EventEmitter {
             cronTime: '*/3 * * * * *',
             onTick: function() {
                 
-              console.log("Check the light");
+              //console.log("Check the light");
              
               t.isLightOn = !t.isLightOn;
    
