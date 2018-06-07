@@ -7,7 +7,7 @@ import EventEmitter from "events";
 export class Farmer extends EventEmitter {
 
     private board: Board;
-    private readonly TEMP_HUMIDITY_PIN: number = 4;
+    private readonly TEMP_HUMIDITY_PIN: number = 4; // GPIO4
     private readonly LIGHT_PIN: number = 22;//GPIO6
 
 
@@ -16,7 +16,7 @@ export class Farmer extends EventEmitter {
 
     private readonly FAN_PIN: number = 24; // GPIO19
 
-    private readonly WATER_PIN: number = 0; // GPIO17
+    private readonly WATER_PIN: number = 2; // GPIO27
 
     private light = new Led(this.LIGHT_PIN); //GPIO6
     private pinFan = new Pin(this.FAN_PIN); // GPIO19
@@ -48,29 +48,26 @@ export class Farmer extends EventEmitter {
             light.off();
             pinFan.low();
             lcd.off();
+            lcd.noBacklight();
         });
 
       
         this.waterSensor.read(function(err,data) {
             if(!err) {
-                console.log("Water "+data);
                 t.emit("water",data > 0);
-              /* var current = data > 0 ;
-               if(current != t.isWaterIn) {
-                t.isWaterIn = current;
-                t.emit("water",t.isWaterIn);
-               }*/
-            } else
+               } else
                 console.log(err);
             
         })
-
+        
 
         this.jobCheckTheLight = this.checkTheLightJob();
-        this.jobCheckTheLight.start();
+        //this.jobCheckTheLight.start();
 
+        
         this.lcd.on();
-        this.lcd.cursor(0,0);
+        this.lcd.backlight();
+        //this.lcd.cursor(0,0);
         this.lcd.useChar("box2");
         this.lcd.print("Farmer ready!");
 

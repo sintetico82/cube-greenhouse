@@ -44,7 +44,7 @@ board.on("ready", function () {
     // Create e new farmer
     var farmer = new Farmer(board);
 
-    var led = new Led(29); //GPIO21
+    var led = new Led(0); //GPIO17
 
     // turn on power LED
     led.on();
@@ -54,7 +54,7 @@ board.on("ready", function () {
         res.render("index");
     });
 
-
+    
     board.loop(2000,function() {
 
         farmer.checkTemperature(function(t : number,h: number) {
@@ -62,6 +62,8 @@ board.on("ready", function () {
         })
        
     });
+
+    
 
     farmer.on("light",function(status: boolean) {
         io.sockets.emit("light",status);
@@ -71,6 +73,8 @@ board.on("ready", function () {
         io.sockets.emit("water",status);
     })
 
+    farmer.lightOn();
+    //farmer.freshAir();
 
     io.on('connection', function(socket){
 
@@ -86,7 +90,7 @@ board.on("ready", function () {
         
     });
 
-
+ 
    
     
 
