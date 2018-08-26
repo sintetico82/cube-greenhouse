@@ -50,6 +50,7 @@ export class Farmer extends EventEmitter {
             light.off();
             pinFan.low();
             lcd.off();
+            // @ts-ignore
             lcd.noBacklight();
         });
 
@@ -61,6 +62,7 @@ export class Farmer extends EventEmitter {
         this.jobCheckTheLight.start();
 
         this.lcd.on();
+        // @ts-ignore
         this.lcd.backlight();
         this.lcd.useChar("duck");
         this.lcd.useChar("box2");
