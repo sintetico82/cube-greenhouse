@@ -1,33 +1,66 @@
+declare var Vue: any;
 
-$(document).ready(function () {
+var socket: SocketIOClient.Socket;
+var data = {
+    humidity: 0,
+    temperature: 0,
+    water: 'n.d.',
+    isWater: false,
+    isLight: false,
+    isFan: false,
+    lightStartTime: '',
+    lightEndTime: ''
+}
 
-    var socket = io.connect();
-    var $temperaturePlaceholder = $("#temperature-placeholder");
-    var $humidityPlaceholder = $("#humidity-placeholder");
-    var $lightPlaceholder = $("#light-placeholder");
-    var $waterPlaceholder = $("#water-placeholder");
+var cubeApp = new Vue({
+    el: '#cube-app',
+    delimiters: ["[[", "]]"],
+    data: data,
+    created: initSocket,
+    methods: {
+
+        lightSwitch: function() {
+            socket.emit('light-switch', data.isLight);
+        },
+        fanSwitch: function() {
+            socket.emit('fan-switch',data.isFan);
+        },
+        setLightTime: function() {
+            socket.emit('set-light-time',{
+                start: data.lightStartTime,
+                end: data.lightEndTime
+            })
+        }
+    }
+
+})
+
+function initSocket() {
+    socket = io.connect();
+
     socket.on('temperature', function (value: any) {
 
-        $temperaturePlaceholder.text(value.temperature);
-        $humidityPlaceholder.text(value.humidity);
+        data.humidity = value.humidity;
+        data.temperature = value.temperature;
     })
 
-    socket.on("light", function (value: boolean) {
-        if (value)
-            $(".fa-lightbulb").addClass("text-warning");
-        else
-            $(".fa-lightbulb").removeClass("text-warning");
+    socket.on("water", function (value: boolean) {
+
+        data.isWater = !value;
+        data.water = !value ? "I am fine" : "Need water!";
+    })
+
+    socket.on("light", function (value: any) {
+
+        data.isLight = value.status;
+        data.lightStartTime = value.start;
+        data.lightEndTime = value.end;
+    })
+    socket.on("fan", function (value: boolean) {
         
-        $lightPlaceholder.text(value ? "On" : "Off");
-    })
-
-    socket.on("water",function(value: boolean) {
-        if(!value)
-            $(".fa-beer").addClass("text-info");
-        else
-            $(".fa-beer").removeClass("text-info");
-        $waterPlaceholder.text(!value ? "I am fine" : "Need water!")
+        data.isFan = value;
     })
 
     socket.emit("ready");
-});
+}
+

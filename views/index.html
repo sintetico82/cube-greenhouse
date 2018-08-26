@@ -10,6 +10,7 @@
 
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css" integrity="sha384-+d0P83n9kaQMCwj8F4RJB66tzIwOKmrdb46+porD/OvrJ+37WqIM7UoBtwHO6Nlg"
         crossorigin="anonymous">
+    <link rel="stylesheet" href="/css/main.css">
     <title>Cube Greenhouse</title>
     <style>
         body {
@@ -20,13 +21,12 @@
         .text-lime {
             color: limegreen;
         }
-
-       
     </style>
 </head>
 
 <body>
-    <div class="container">
+    <div id="cube-app" class="container">
+
         <h1 class="text-lime text-center">
             <i class="fas fa-cube"></i> Cube Greenhouse</h1>
         <br />
@@ -40,7 +40,7 @@
                         <h1 class="card-title text-center">
                             <i class="fas fa-thermometer-three-quarters">
                             </i>
-                            <span id="temperature-placeholder">0</span>&deg;
+                            [[temperature]]&deg;
                         </h1>
 
                     </div>
@@ -56,27 +56,8 @@
                         <h1 class="card-title text-center">
                             <i class="fas fa-tint">
                             </i>
-                            <span id="humidity-placeholder">0</span> %
-
+                            [[ humidity ]] %
                         </h1>
-
-                    </div>
-                </div>
-                <br />
-            </div>
-            <div class="col-12 col-sm-6 col-lg-4">
-                <div class="card">
-                    <div class="card-header bg-default">
-                        Light
-                    </div>
-                    <div class="card-body">
-                        <h1 class="card-title text-center">
-                            <i class="fas fa-lightbulb"></i>
-                            </i>
-                            <span id="light-placeholder">n.d.</span>
-
-                        </h1>
-
                     </div>
                 </div>
                 <br />
@@ -88,11 +69,71 @@
                     </div>
                     <div class="card-body">
                         <h1 class="card-title text-center">
-                            <i class="fas fa-beer"></i>
-                            </i>
-                            <span id="water-placeholder">n.d.</span>
-
+                            <i v-bind:class="['fas fa-beer', {'text-info':isWater}]"></i>
+                            [[water]]
                         </h1>
+                    </div>
+                </div>
+                <br />
+            </div>
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-default">
+                        Light
+                        <div class="float-right">
+                            <label class="switch">
+                                <input type="checkbox" id="checkbox-light" v-model="isLight" v-on:change="lightSwitch">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title text-center">
+                            <i v-bind:class="['fas fa-lightbulb',{'text-warning':isLight}]"></i>
+                            [[ isLight ? 'On' : 'Off' ]]
+                        </h1>
+
+                    </div>
+                    <div class="card-footer">
+                        <form>
+                            <div class="form-row">
+                                <div class="col-5">
+                                    <input id="light-start" type="time" class="form-control" placeholder="Start time" v-model="lightStartTime">
+                                </div>
+                                <div class="col-5">
+                                    <input id="light-end" type="time" class="form-control" placeholder="End time" v-model="lightEndTime">
+                                </div>
+                                <div class="col-2">
+                                    <a class="btn btn-light" title="set the time" v-on:click="setLightTime"><i class="fas fa-check"></i></a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+                <br />
+            </div>
+
+            <div class="col-12 col-sm-6 col-lg-4">
+                <div class="card">
+                    <div class="card-header bg-default">
+                        Air
+                        <div class="float-right">
+                            <label class="switch">
+                                <input type="checkbox" id="checkbox-fan" v-model="isFan" v-on:change="fanSwitch">
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+
+                    </div>
+                    <div class="card-body">
+                        <h1 class="card-title text-center">
+                            <i v-bind:class="['fas fa-snowflake', {'text-info':isFan}]"></i>
+                            [[ isFan ? 'On' : 'Off' ]]
+                        </h1>
+
+                    </div>
+                    <div class="card-footer">
 
                     </div>
                 </div>
@@ -103,6 +144,8 @@
     </div>
 
 
+
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
         crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
@@ -111,7 +154,6 @@
         crossorigin="anonymous"></script>
 
     <script src="/socket.io/socket.io.js"></script>
-    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.7.0/Chart.bundle.min.js"></script>
     <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="/js/main.js"></script>
 </body>
