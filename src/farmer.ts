@@ -8,8 +8,8 @@ import * as fs from 'fs';
 
 class FarmerData {
     public static readonly FILE_NAME = "cube-greenhouse-data.json";
-    public lightStartTime: moment.Moment | undefined;
-    public lightEndTime: moment.Moment | undefined;
+    public lightStartTime: string | undefined;
+    public lightEndTime: string | undefined;
     constructor() { }
 }
 
@@ -82,9 +82,13 @@ export class Farmer extends EventEmitter {
             runOnInit: true,
             onTick: function () {
 
-                if (t.data.lightStartTime && t.data.lightEndTime && t.data.lightStartTime.isValid() && t.data.lightEndTime.isValid()) {
+                if (t.data.lightStartTime && t.data.lightEndTime) {
 
-                    moment().isBetween(t.data.lightStartTime, t.data.lightEndTime) ? t.lightOn() : t.lightOff();
+                    let start = moment(t.data.lightStartTime,"HH:mm");
+                    let end = moment(t.data.lightEndTime,"HH:mm");
+
+                    moment().isBetween(start, end) ? t.lightOn() : t.lightOff();
+                    
                     t.emit("light", t.isLightOn);
 
                 }
@@ -161,22 +165,18 @@ export class Farmer extends EventEmitter {
     }
 
     setLightTime(start: string, end: string) {
-        if(this.jobCheckTheLight) {
-            this.jobCheckTheLight.start();
-            console.log("FF %s",this.jobCheckTheLight.lastDate());
-        }
-        this.data.lightStartTime = moment(start, "HH:mm");
-        this.data.lightEndTime = moment(end, "HH:mm");
+        this.data.lightStartTime = moment(start, "HH:mm").isValid() ? start : undefined;
+        this.data.lightEndTime = moment(end, "HH:mm").isValid() ? end : undefined;
         this.saveState();
         this.displayDataInfo();
 
     }
 
     displayDataInfo() {
-        if (this.data.lightStartTime && this.data.lightStartTime.isValid() && this.data.lightEndTime && this.data.lightEndTime.isValid()) {
+        if (this.data.lightStartTime &&  this.data.lightEndTime ) {
             this.lcd.clear();
             this.lcd.cursor(0, 0);
-            this.lcd.print(util.format("L:%s-%s  ", this.data.lightStartTime.format("HH:mm"), this.data.lightEndTime.format("HH:mm")));
+            this.lcd.print(util.format("L:%s-%s  ", this.data.lightStartTime, this.data.lightEndTime));
         }
     }
 
@@ -197,14 +197,8 @@ export class Farmer extends EventEmitter {
                     if (err) {
                         console.error(err);
                     } else {
-                        t.data = JSON.parse(data, function (k, v) {
-                            if (k == 'lightStartTime' || k == 'lightEndTime')
-                                return moment(v);
-
-
-                            return v;
-                        });
-
+                        t.data = JSON.parse(data);
+                        
                         if (callback)
                             callback();
                     }
@@ -216,15 +210,15 @@ export class Farmer extends EventEmitter {
     }
 
     getStartTime() {
-        if (this.data.lightStartTime && this.data.lightStartTime.isValid())
-            return this.data.lightStartTime.format("HH:mm");
+        if (this.data.lightStartTime)
+            return this.data.lightStartTime;
         else
             return null;
     }
 
     getEndTime() {
-        if (this.data.lightEndTime && this.data.lightEndTime.isValid())
-            return this.data.lightEndTime.format("HH:mm");
+        if (this.data.lightEndTime)
+            return this.data.lightEndTime;
         else
             return null;
     }
