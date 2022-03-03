@@ -37,6 +37,6 @@
     "mustache-express": "^1.2.7",
     "node-dht-sensor": "0.0.34",
     "raspi-io": "^9.0.0",
-    "socket.io": "^2.1.1"
+    "socket.io": "^2.4.0"
   }
 }
