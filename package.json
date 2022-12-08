@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "cron": "git+https://github.com/kelektiv/node-cron",
-    "express": "^4.16.3",
+    "express": "^4.17.3",
     "http": "0.0.0",
     "johnny-five": "^0.14.3",
     "mustache-express": "^1.2.7",
